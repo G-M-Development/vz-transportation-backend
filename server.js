@@ -25,7 +25,7 @@ const upload = multer({ storage: storage });
 
 const transporter = nodemailer.createTransport({
   host: MAIL_HOST,
-  port: Number(MAIL_PORT), // Ensure this is a number
+  port: Number(MAIL_PORT),
   secure: MAIL_SECURE === "true",
   auth: {
     user: MAIL_USER,
@@ -51,17 +51,12 @@ app.post("/send-email", upload.array("images", 3), async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully");
 
     const deleteFilePromises = images.map((img) =>
       fs
         .unlink(img.path)
-        .then(() => {
-          console.log(`File deleted: ${img.path}`);
-        })
-        .catch((err) => {
-          console.error(`Error deleting file ${img.path}:`, err);
-        })
+        .then(() => {})
+        .catch((err) => {})
     );
 
     await Promise.all(deleteFilePromises);
@@ -73,12 +68,8 @@ app.post("/send-email", upload.array("images", 3), async (req, res) => {
     const deleteFilePromises = images.map((img) =>
       fs
         .unlink(img.path)
-        .then(() => {
-          console.log(`File deleted: ${img.path}`);
-        })
-        .catch((err) => {
-          console.error(`Error deleting file ${img.path}:`, err);
-        })
+        .then(() => {})
+        .catch((err) => {})
     );
 
     await Promise.all(deleteFilePromises);
@@ -116,6 +107,4 @@ function generateEmailHtml(body) {
   return htmlContent || "<p>No data provided.</p>";
 }
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+app.listen(PORT);
